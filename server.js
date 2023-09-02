@@ -1,14 +1,14 @@
 // EXPRESS
 
 const express = require("express");
-const cors = require('cors');
+const cors = require("cors");
 const app = express();
 const port = 3003;
 
 const axios = require("axios");
 const { Client } = require("@notionhq/client");
 
-app.use(cors())
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
@@ -43,19 +43,20 @@ async function getRestaurantDetails(restaurantName, location) {
       const data = response.data;
       if (data.businesses && data.businesses.length > 0) {
         const business = data.businesses[0]; // Assuming we found a match
+        const name = business.name;
         const rating = business.rating;
         const priceRange = business.price || "N/A";
         const cuisineType = business.categories?.[0]?.title || "N/A";
         const isClosed = business.is_closed;
         const location = business.coordinates;
         const restaurantDetails = {
+          Name: name,
           Rating: rating,
           "Price Range": priceRange,
           "Cuisine Type": cuisineType,
           Open: !isClosed,
           Location: location,
         };
-        console.log("Restaurant Details:", restaurantDetails);
         return restaurantDetails;
       } else {
         console.log("Restaurant not found on Yelp");
@@ -125,19 +126,13 @@ async function createNotionEntry(restaurantDetails) {
           ],
         },
         Open: {
-          rich_text: [
-            {
-              text: {
-                content: restaurantDetails["Open"],
-              },
-            },
-          ],
+          checkbox: restaurantDetails["Open"],
         },
         Location: {
           rich_text: [
             {
               text: {
-                content: restaurantDetails["Location"],
+                content: String(restaurantDetails["Location"]),
               },
             },
           ],
@@ -157,16 +152,16 @@ async function createNotionEntry(restaurantDetails) {
 // module.exports = sampleNotionFunction;
 
 // Test notion api example
-const details = {
-  Name: "Driftwood Deli and Market",
-  "Price Range": "$$",
-  "Cuisine Type": "Indian",
-  Open: "Mon-Sun: 11:00 AM - 10:00 PM",
-  Rating: 4.5,
-  Location: "872 Sycamore",
-};
+// const details = {
+//   Name: "Driftwood Deli and Market",
+//   "Price Range": "$$",
+//   "Cuisine Type": "Indian",
+//   Open: "Mon-Sun: 11:00 AM - 10:00 PM",
+//   Rating: 4.5,
+//   Location: "872 Sycamore",
+// };
 
-console.log(createNotionEntry(details));
+// console.log(createNotionEntry(details));
 
 // EXPRESS
 
@@ -179,6 +174,8 @@ app.post("/add-restaurant", async (req, res) => {
       restaurantName,
       restaurantCity
     );
+
+    console.log(restaurantDetails);
     await createNotionEntry(restaurantDetails);
 
     res.send("Restaurant details added to Notion successfully");
