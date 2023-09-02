@@ -27,6 +27,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
       // Add "active" class to the clicked tab button
       btn.classList.add("active");
+
+      // Check if the clicked tab is the "Map" tab and initialize the map
+      if (btn.id === "map-tab") {
+        initMap();
+      }
     });
   });
 
@@ -39,7 +44,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const restaurantName = document.getElementById("restaurant-name").value;
     const restaurantCity = document.getElementById("restaurant-city").value;
 
-    console.log('submitting', { restaurantName, restaurantCity });
+    console.log("submitting", { restaurantName, restaurantCity });
 
     // Need to get values from server.js function calls and use them here. Do so using express.
     async function sendPostRequest() {
@@ -61,8 +66,21 @@ document.addEventListener("DOMContentLoaded", function () {
         console.error(error);
       }
     }
+    // window.addEventListener("load", getCurrentLocation);
+
     sendPostRequest();
     // Clear the form
     addRestaurantForm.reset();
   });
 });
+
+// Initialize Google Map
+function initMap() {
+  // Create a map centered at a specific location
+  const map = new google.maps.Map(document.getElementById("map-content"), {
+    center: { lat: 55.53, lng: 9.4 },
+    zoom: 10,
+  });
+
+  // You can add more map-related code here, such as markers, routes, etc.
+}

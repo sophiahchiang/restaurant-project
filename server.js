@@ -7,6 +7,9 @@ const port = 3003;
 
 const axios = require("axios");
 const { Client } = require("@notionhq/client");
+const googleMapsClient = require("@google/maps").createClient({
+  key: "AIzaSyC3cN95E1Cght0KuIRP5Iq0zc4fJjwatz0", // Replace with your Google API key
+});
 
 app.use(cors());
 app.use(express.json());
@@ -162,6 +165,21 @@ async function createNotionEntry(restaurantDetails) {
 // };
 
 // console.log(createNotionEntry(details));
+
+// MAPS
+
+function getCurrentLocation() {
+  if ("geolocation" in navigator) {
+    navigator.geolocation.getCurrentPosition(function (position) {
+      const latitude = position.coords.latitude;
+      const longitude = position.coords.longitude;
+
+      console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
+    });
+  } else {
+    console.error("Geolocation is not supported by your browser");
+  }
+}
 
 // EXPRESS
 
