@@ -39,10 +39,12 @@ document.addEventListener("DOMContentLoaded", function () {
     const restaurantName = document.getElementById("restaurant-name").value;
     const restaurantCity = document.getElementById("restaurant-city").value;
 
+    console.log('submitting', { restaurantName, restaurantCity });
+
     // Need to get values from server.js function calls and use them here. Do so using express.
     async function sendPostRequest() {
       try {
-        const response = await fetch("/add-restaurant", {
+        const response = await fetch("http://localhost:3003/add-restaurant", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
