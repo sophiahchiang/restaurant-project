@@ -1,6 +1,6 @@
 // Create a new page in the specified database
 const { Client } = require("@notionhq/client");
-export async function createNotionEntry(restaurantDetails) {
+async function createNotionEntry(restaurantDetails) {
   // const { Client } = require("@notionhq/client");
 
   // Replace with your Notion API integration token
@@ -73,19 +73,19 @@ export async function createNotionEntry(restaurantDetails) {
 
 // module.exports = sampleNotionFunction;
 
-//Create data to pass to function
+// Create data to pass to function
 // Restaurant details obtained from get_restaurant_details
-// const details = {
-//   Name: "Driftwood Deli and Market",
-//   "Price Range": "$$",
-//   "Cuisine Type": "Indian",
-//   Open: "Mon-Sun: 11:00 AM - 10:00 PM",
-//   Rating: 4.5,
-//   Location: "872 Sycamore",
-// };
+const details = {
+  Name: "Driftwood Deli and Market",
+  "Price Range": "$$",
+  "Cuisine Type": "Indian",
+  Open: "Mon-Sun: 11:00 AM - 10:00 PM",
+  Rating: 4.5,
+  Location: "872 Sycamore",
+};
 
 // // Call the function to create the Notion entry
-// createNotionEntry(details);
+console.log(createNotionEntry(details));
 
 // window.createNotionEntry = createNotionEntry;
 
