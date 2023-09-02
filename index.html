@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="styles.css" />
+    <title>Restaurant List and Map</title>
+  </head>
+  <body>
+    <div class="tabs">
+      <button class="tab-btn active" id="list-tab">List</button>
+      <button class="tab-btn" id="map-tab">Map</button>
+      <button class="tab-btn" id="add-tab">Add</button>
+    </div>
+    <div class="tab-content" id="list-content">
+      <!-- Notion Database Embed Goes Here -->
+      <iframe
+        src="https://v2-embednotion.com/de69ce7308d546fd96f5b59babd67b67?v=07630d3819934cdf8acae3a6997928b2"
+        frameborder="0"
+      ></iframe>
+    </div>
+    <div class="tab-content" id="map-content">
+      <!-- Map Content Goes Here -->
+      <!-- You can embed a map or use a mapping library like Leaflet or Google Maps -->
+    </div>
+    <div class="tab-content" style="text-align: center" id="add-content">
+      <h2>Add a New Restaurant</h2>
+      <form id="add-restaurant-form">
+        <label for="restaurant-name">Restaurant Name:</label>
+        <input type="text" id="restaurant-name" required />
+        <label for="restaurant-city">City:</label>
+        <input type="text" id="restaurant-city" required />
+        <button type="submit">Add</button>
+      </form>
+    </div>
+    <script type="module" src="notion.js"></script>
+    <script type="module" src="script.js"></script>
+  </body>
+</html>
