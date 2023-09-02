@@ -59,6 +59,7 @@ document.addEventListener("DOMContentLoaded", function () {
         console.error(error);
       }
     }
+    sendPostRequest();
     // Clear the form
     addRestaurantForm.reset();
   });

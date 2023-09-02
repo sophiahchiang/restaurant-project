@@ -53,6 +53,7 @@ async function getRestaurantDetails(restaurantName, location) {
           Open: !isClosed,
           Location: location,
         };
+        console.log("Restaurant Details:", restaurantDetails);
         return restaurantDetails;
       } else {
         console.log("Restaurant not found on Yelp");
