@@ -25,41 +25,71 @@ const api_key =
 const endpoint = "https://api.yelp.com/v3/businesses/search";
 
 async function getRestaurantDetails(restaurantName, location) {
-  // You've got to enter it in with name and location
   const params = {
-    term: restaurantName, // Replace with the restaurant name you want to search
-    location: location, // Replace with a specific location if needed
-    limit: 1, // Limit to 1 result, assuming the restaurant name is unique
+    term: restaurantName,
+    location: location,
+    limit: 1,
   };
 
-  // Define the headers with your API key
   const headers = {
     Authorization: `Bearer ${api_key}`,
   };
 
   try {
-    // Send the API request
-    const response = await axios.get(endpoint, { params, headers });
+    const yelpResponse = await axios.get(endpoint, { params, headers });
 
-    // Check if the request was successful (status code 200)
-    if (response.status === 200) {
-      const data = response.data;
-      if (data.businesses && data.businesses.length > 0) {
-        const business = data.businesses[0]; // Assuming we found a match
+    if (yelpResponse.status === 200) {
+      const yelpData = yelpResponse.data;
+
+      if (yelpData.businesses && yelpData.businesses.length > 0) {
+        const business = yelpData.businesses[0];
+        console.log(business);
         const name = business.name;
         const rating = business.rating;
         const priceRange = business.price || "N/A";
         const cuisineType = business.categories?.[0]?.title || "N/A";
         const isClosed = business.is_closed;
         const location = business.coordinates;
+        const address = business.location.display_address;
+
+        const origin = "872 Sycamore Dr Palo Alto CA 94303";
+        const destination = `${location.latitude},${location.longitude}`;
+
+        const distanceMatrixResponse = await new Promise((resolve, reject) => {
+          googleMapsClient.distanceMatrix(
+            {
+              origins: [origin],
+              destinations: [destination],
+              mode: "driving",
+              units: "imperial",
+            },
+            (err, response) => {
+              if (!err) {
+                resolve(response);
+              } else {
+                reject(err);
+              }
+            }
+          );
+        });
+
+        const distance =
+          distanceMatrixResponse.json.rows[0].elements[0].distance.text;
+        const duration =
+          distanceMatrixResponse.json.rows[0].elements[0].duration.text;
+
         const restaurantDetails = {
           Name: name,
           Rating: rating,
           "Price Range": priceRange,
           "Cuisine Type": cuisineType,
           Open: !isClosed,
-          Location: location,
+          Location: address,
+          Distance: distance,
+          Duration: duration,
         };
+
+        console.log(restaurantDetails);
         return restaurantDetails;
       } else {
         console.log("Restaurant not found on Yelp");
@@ -69,20 +99,23 @@ async function getRestaurantDetails(restaurantName, location) {
     }
   } catch (error) {
     console.error(`An error occurred: ${error.message}`);
+    throw error; // Propagate the error
   }
 }
 
 // Test yelp api example
-getRestaurantDetails("Driftwood Deli and Market", "Palo Alto")
-  .then((restaurantDetails) => {
-    console.log("Restaurant Details:");
-    for (const key in restaurantDetails) {
-      console.log(`${key}: ${restaurantDetails[key]}`);
-    }
-  })
-  .catch((error) => {
-    console.error(error);
-  });
+// console.log(getRestaurantDetails("Driftwood Deli and Market", "Palo Alto"));
+// console.log(getRestaurantDetails("In N Out", "Mountain View"));
+
+// .then((restaurantDetails) => {
+//   console.log("Restaurant Details:");
+//   for (const key in restaurantDetails) {
+//     console.log(`${key}: ${restaurantDetails[key]}`);
+//   }
+// })
+// .catch((error) => {
+//   console.error(error);
+// });
 
 // NOTION
 
@@ -143,6 +176,18 @@ async function createNotionEntry(restaurantDetails) {
         Rating: {
           number: restaurantDetails["Rating"],
         },
+        "Distance (miles)": {
+          number: parseFloat(restaurantDetails["Distance"].slice(0, -3)),
+        },
+        Duration: {
+          rich_text: [
+            {
+              text: {
+                content: restaurantDetails["Duration"],
+              },
+            },
+          ],
+        },
       },
     });
 
@@ -168,19 +213,6 @@ async function createNotionEntry(restaurantDetails) {
 
 // MAPS
 
-function getCurrentLocation() {
-  if ("geolocation" in navigator) {
-    navigator.geolocation.getCurrentPosition(function (position) {
-      const latitude = position.coords.latitude;
-      const longitude = position.coords.longitude;
-
-      console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
-    });
-  } else {
-    console.error("Geolocation is not supported by your browser");
-  }
-}
-
 // EXPRESS
 
 app.post("/add-restaurant", async (req, res) => {
@@ -194,6 +226,7 @@ app.post("/add-restaurant", async (req, res) => {
     );
 
     console.log(restaurantDetails);
+
     await createNotionEntry(restaurantDetails);
 
     res.send("Restaurant details added to Notion successfully");
