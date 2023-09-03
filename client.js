@@ -75,12 +75,70 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 // Initialize Google Map
+// In client.js
 function initMap() {
-  // Create a map centered at a specific location
+  const bounds = new google.maps.LatLngBounds();
+  const markersArray = [];
   const map = new google.maps.Map(document.getElementById("map-content"), {
     center: { lat: 55.53, lng: 9.4 },
     zoom: 10,
   });
+  // initialize services
+  const geocoder = new google.maps.Geocoder();
 
-  // You can add more map-related code here, such as markers, routes, etc.
+  // Fetch restaurant data from your server
+  fetch("http://localhost:3003/get-restaurants")
+    .then((response) => response.json())
+    .then((restaurants) => {
+      restaurants.forEach((restaurant) => {
+        // Use restaurant.address for geocoding
+        geocoder.geocode({ address: restaurant.address }, (results, status) => {
+          if (status === "OK" && results[0].geometry) {
+            const location = results[0].geometry.location;
+            const marker = new google.maps.Marker({
+              map,
+              position: location,
+              title: restaurant.name,
+            });
+
+            // Create an info window for the marker
+            const infoWindow = new google.maps.InfoWindow({
+              content: `<div>${restaurant.name}</div>`,
+            });
+
+            // Show the info window for this marker
+            infoWindow.open(map, marker);
+
+            // Create an info window for the marker
+            const addressWindow = new google.maps.InfoWindow({
+              content: `<div>${restaurant.address}</div>`,
+            });
+
+            // Show the info window when the marker is clicked
+            marker.addListener("click", () => {
+              addressWindow.open(map, marker);
+            });
+
+            markersArray.push(marker);
+            bounds.extend(location);
+            map.fitBounds(bounds);
+          } else {
+            console.error(`Geocode was not successful for ${restaurant.name}`);
+          }
+        });
+      });
+    })
+    .catch((error) => {
+      console.error("Error fetching restaurant data:", error);
+    });
 }
+
+function deleteMarkers(markersArray) {
+  for (let i = 0; i < markersArray.length; i++) {
+    markersArray[i].setMap(null);
+  }
+
+  markersArray = [];
+}
+
+window.initMap = initMap;

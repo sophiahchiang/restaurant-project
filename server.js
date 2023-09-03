@@ -11,6 +11,16 @@ const googleMapsClient = require("@google/maps").createClient({
   key: "AIzaSyC3cN95E1Cght0KuIRP5Iq0zc4fJjwatz0", // Replace with your Google API key
 });
 
+// Replace with your Notion API integration token
+const NOTION_API_KEY = "secret_yB0bzDUDBGVC3eHjbwJtYL5yg78jN2gtX88Vmqx8uQA";
+
+const notion = new Client({
+  auth: NOTION_API_KEY,
+});
+
+// Define the database ID where you want to add entries
+const DATABASE_ID = "de69ce7308d546fd96f5b59babd67b67";
+
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -121,17 +131,6 @@ async function getRestaurantDetails(restaurantName, location) {
 
 // Create a new page in the specified database
 async function createNotionEntry(restaurantDetails) {
-  // const { Client } = require("@notionhq/client");
-
-  // Replace with your Notion API integration token
-  const NOTION_API_KEY = "secret_yB0bzDUDBGVC3eHjbwJtYL5yg78jN2gtX88Vmqx8uQA";
-
-  const notion = new Client({
-    auth: NOTION_API_KEY,
-  });
-
-  // Define the database ID where you want to add entries
-  const DATABASE_ID = "de69ce7308d546fd96f5b59babd67b67";
   try {
     const response = await notion.pages.create({
       parent: {
@@ -233,6 +232,32 @@ app.post("/add-restaurant", async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).send("Error adding restaurant details to Notion");
+  }
+});
+
+// Fetch all restaurant names from Notion to display on map
+
+// In server.js
+app.get("/get-restaurants", async (req, res) => {
+  try {
+    const response = await notion.databases.query({
+      database_id: DATABASE_ID, // Replace with your actual database ID
+    });
+    console.log("RESPONSE:", response);
+    const restaurants = response.results.map((item) => {
+      // Map Notion properties to the required format
+      return {
+        name: item.properties.Name.title[0].text.content,
+        address: item.properties.Location.rich_text[0].text.content,
+        // latitude: item.properties.Latitude.number,
+        // longitude: item.properties.Longitude.number,
+      };
+    });
+    console.log("RESTAURANTS:", restaurants);
+    res.json(restaurants);
+  } catch (error) {
+    console.error("Error fetching restaurant data from Notion:", error);
+    res.status(500).send("Error fetching restaurant data from Notion");
   }
 });
 
