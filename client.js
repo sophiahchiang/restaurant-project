@@ -83,6 +83,7 @@ function initMap() {
     center: { lat: 55.53, lng: 9.4 },
     zoom: 10,
   });
+
   // initialize services
   const geocoder = new google.maps.Geocoder();
 
@@ -91,6 +92,36 @@ function initMap() {
     .then((response) => response.json())
     .then((restaurants) => {
       restaurants.forEach((restaurant) => {
+        // Add a blue dot marker for current location
+        if ("geolocation" in navigator) {
+          navigator.geolocation.getCurrentPosition((position) => {
+            const currentLocation = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude,
+            };
+
+            const currentLocationMarker = new google.maps.Marker({
+              map,
+              position: currentLocation,
+              icon: {
+                url: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png",
+              },
+              title: "Your Location",
+            });
+
+            // Create an info window for the current location marker
+            const infoWindow = new google.maps.InfoWindow({
+              content: "Your Location",
+            });
+
+            // Show the info window for the current location marker
+            infoWindow.open(map, currentLocationMarker);
+
+            bounds.extend(currentLocation);
+            map.fitBounds(bounds);
+          });
+        }
+
         // Use restaurant.address for geocoding
         geocoder.geocode({ address: restaurant.address }, (results, status) => {
           if (status === "OK" && results[0].geometry) {
