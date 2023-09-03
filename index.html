@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="styles.css" />
     <title>Restaurant List and Map</title>
+    <script
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC3cN95E1Cght0KuIRP5Iq0zc4fJjwatz0&callback=initMap&v=weekly"
+      defer
+    ></script>
   </head>
   <body>
     <div class="tabs">
@@ -19,9 +23,8 @@
         frameborder="0"
       ></iframe>
     </div>
-    <div class="tab-content" id="map-content">
-      <!-- Map Content Goes Here -->
-      <!-- You can embed a map or use a mapping library like Leaflet or Google Maps -->
+    <div class="tab-content" id="map-content" style="width: 97%; height: 80vh">
+      <div id="google-map" style="height: 100%"></div>
     </div>
     <div class="tab-content" style="text-align: center" id="add-content">
       <h2>Add a New Restaurant</h2>
@@ -33,6 +36,6 @@
         <button type="submit">Add</button>
       </form>
     </div>
-    <script type="module" src="client.js"></script>
+    <script src="client.js"></script>
   </body>
 </html>
