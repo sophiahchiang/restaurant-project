@@ -249,6 +249,8 @@ app.get("/get-restaurants", async (req, res) => {
       return {
         name: item.properties.Name.title[0].text.content,
         address: item.properties.Location.rich_text[0].text.content,
+        rating: item.properties.Rating.number,
+        cuisine: item.properties["Cuisine Type"].multi_select[0].name,
         // latitude: item.properties.Latitude.number,
         // longitude: item.properties.Longitude.number,
       };

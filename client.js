@@ -58,7 +58,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
         if (response.ok) {
-          console.log("Restaurant details added to Notion successfully");
+          window.alert("Restaurant details added to Notion successfully");
         } else {
           console.error("Failed to add restaurant details to Notion");
         }
@@ -142,7 +142,8 @@ function initMap() {
 
             // Create an info window for the marker
             const addressWindow = new google.maps.InfoWindow({
-              content: `<div>${restaurant.address}</div>`,
+              content: `<div>Rating:  ${restaurant.rating}<br>Cuisine: ${restaurant.cuisine}</div>`,
+              zIndex: 10,
             });
 
             // Show the info window when the marker is clicked
