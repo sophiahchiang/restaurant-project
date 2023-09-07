@@ -8,11 +8,11 @@ const port = 3003;
 const axios = require("axios");
 const { Client } = require("@notionhq/client");
 const googleMapsClient = require("@google/maps").createClient({
-  key: "AIzaSyC3cN95E1Cght0KuIRP5Iq0zc4fJjwatz0", // Replace with your Google API key
+  key: "", // Replace with your Google API key
 });
 
 // Replace with your Notion API integration token
-const NOTION_API_KEY = "secret_yB0bzDUDBGVC3eHjbwJtYL5yg78jN2gtX88Vmqx8uQA";
+const NOTION_API_KEY = ""; // Replace with your Notion API key
 
 const notion = new Client({
   auth: NOTION_API_KEY,
@@ -27,10 +27,8 @@ app.use(express.urlencoded({ extended: false }));
 
 // YELP
 
-// Replace 'YOUR_API_KEY' with your actual Yelp Fusion API key
-const api_key =
-  "PpvUN9UiZ9_dvYu43ypQFT5bOjfOFttwyuNkQvSOnti14li3MdCbFpBPFvhqQu5EMSCoU3rnLqhCTTUJ9k-Sq4Q8l5TmAcVOX5H7VsBGnbW9L5Xwx-S4QX9OhS7yZHYx";
-
+// Replace with your actual Yelp Fusion API key
+const api_key = ""
 // Define the Yelp Fusion API endpoint for business search
 const endpoint = "https://api.yelp.com/v3/businesses/search";
 
