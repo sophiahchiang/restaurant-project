@@ -18,7 +18,7 @@ const notion = new Client({
   auth: NOTION_API_KEY,
 });
 
-// Define the database ID where you want to add entries
+// Define the Notion database ID where you want to add entries
 const DATABASE_ID = "de69ce7308d546fd96f5b59babd67b67";
 
 app.use(cors());
