@@ -52,7 +52,7 @@ npm install
    - Replace `<Yelp-API-Key>` with your Yelp Fusion API key in `server.js`.
    - Replace `<Google-API-Key>` with your Google Maps API key in `index.html`.
    - Replace `<Notion-API-Key>` with your Notion API key in `server.js`.
-   - Replace the current `Database_Id` in `server.js` with the database id of the Notion database you want to add restaurant entries to.
+   - Replace `Database_Id` in `server.js` with the database id of the Notion database you want to add restaurant entries to.
 
 4. Start the server:
 
